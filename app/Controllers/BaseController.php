@@ -3,8 +3,6 @@
 namespace App\Controllers;
 
 use CodeIgniter\Controller;
-use CodeIgniter\HTTP\CLIRequest;
-use CodeIgniter\HTTP\IncomingRequest;
 use CodeIgniter\HTTP\RequestInterface;
 use CodeIgniter\HTTP\ResponseInterface;
 use Psr\Log\LoggerInterface;
@@ -24,7 +22,7 @@ abstract class BaseController extends Controller
     /**
      * Instance of the main Request object.
      *
-     * @var CLIRequest|IncomingRequest
+     * @var \CodeIgniter\HTTP\IncomingRequest|\CodeIgniter\HTTP\CLIRequest
      */
     protected $request;
 
@@ -35,24 +33,28 @@ abstract class BaseController extends Controller
      *
      * @var list<string>
      */
-    protected $helpers = [];
+    protected $helpers = ['form', 'url']; // load form & url helper globally
 
     /**
-     * Be sure to declare properties for any property fetch you initialized.
-     * The creation of dynamic property is deprecated in PHP 8.2.
+     * Session instance
      */
-    // protected $session;
+    protected $session;
 
     /**
-     * @return void
+     * Constructor.
+     *
+     * @param RequestInterface  $request
+     * @param ResponseInterface $response
+     * @param LoggerInterface   $logger
      */
     public function initController(RequestInterface $request, ResponseInterface $response, LoggerInterface $logger)
     {
         // Do Not Edit This Line
         parent::initController($request, $response, $logger);
 
-        // Preload any models, libraries, etc, here.
+        // Initialize session globally
+        $this->session = \Config\Services::session();
 
-        // E.g.: $this->session = service('session');
+        // Preload any models, libraries, etc, here.
     }
 }

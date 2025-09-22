@@ -1,20 +1,30 @@
 <?php
+
 namespace App\Controllers;
 
 class Home extends BaseController
 {
-    public function index()
+    /**
+     * Default home page
+     */
+    public function index(): string
     {
-        return view('index'); 
+        return view('template');
     }
 
-    public function about()
+    /**
+     * About page
+     */
+    public function about(): string
     {
-        return view('about'); 
+        return view('about');
     }
 
-    public function contact()
+    /**
+     * Contact page
+     */
+    public function contact(): string
     {
-        return view('contact'); 
+        return view('contact');
     }
 }
