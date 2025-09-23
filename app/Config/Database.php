@@ -4,70 +4,43 @@ namespace Config;
 
 use CodeIgniter\Database\Config;
 
-/**
- * Database Configuration
- */
 class Database extends Config
 {
-    /**
-     * The directory that holds the Migrations and Seeds directories.
-     */
     public string $filesPath = APPPATH . 'Database' . DIRECTORY_SEPARATOR;
-
-    /**
-     * Lets you choose which connection group to use if no other is specified.
-     */
     public string $defaultGroup = 'default';
 
-    /**
-     * The default database connection.
-     *
-     * @var array<string, mixed>
-     */
     public array $default = [
-        'DSN'          => '',
-        'hostname'     => 'localhost',    // XAMPP MySQL host
-        'username'     => 'root',         // default XAMPP MySQL user
-        'password'     => '',             // default XAMPP MySQL password
-        'database'     => 'lms_buhisan',  // database name
-        'DBDriver'     => 'MySQLi',
-        'DBPrefix'     => '',
-        'pConnect'     => false,
-        'DBDebug'      => true,
-        'charset'      => 'utf8mb4',
-        'DBCollat'     => 'utf8mb4_general_ci',
-        'swapPre'      => '',
-        'encrypt'      => false,
-        'compress'     => false,
-        'strictOn'     => false,
-        'failover'     => [],
-        'port'         => 3306,           // XAMPP MySQL default port
-        'numberNative' => false,
-        'foundRows'    => false,
-        'dateFormat'   => [
-            'date'     => 'Y-m-d',
-            'datetime' => 'Y-m-d H:i:s',
-            'time'     => 'H:i:s',
-        ],
+        'DSN'       => '',
+        'hostname'  => 'localhost',
+        'username'  => 'root',
+        'password'  => '',
+        'database'  => 'lms_buhisan',
+        'DBDriver'  => 'MySQLi',
+        'DBPrefix'  => '',
+        'pConnect'  => false,
+        'DBDebug'   => true,
+        'charset'   => 'utf8mb4',
+        'DBCollat'  => 'utf8mb4_general_ci',
+        'swapPre'   => '',
+        'encrypt'   => false,
+        'compress'  => false,
+        'strictOn'  => false,
+        'failover'  => [],
+        'port'      => 3306,
     ];
 
-    /**
-     * This database connection is used when running PHPUnit database tests.
-     *
-     * @var array<string, mixed>
-     */
     public array $tests = [
         'DSN'         => '',
         'hostname'    => '127.0.0.1',
         'username'    => 'root',
-        'password'    => '',          // test DB password
-        'database'    => ':memory:',
-        'DBDriver'    => 'SQLite3',
-        'DBPrefix'    => 'db_',      // Needed for prefix tests
+        'password'    => '',
+        'database'    => 'lms_buhisan_test',
+        'DBDriver'    => 'MySQLi',
+        'DBPrefix'    => '',
         'pConnect'    => false,
         'DBDebug'     => true,
-        'charset'     => 'utf8',
-        'DBCollat'    => '',
+        'charset'     => 'utf8mb4',
+        'DBCollat'    => 'utf8mb4_general_ci',
         'swapPre'     => '',
         'encrypt'     => false,
         'compress'    => false,
@@ -76,18 +49,33 @@ class Database extends Config
         'port'        => 3306,
         'foreignKeys' => true,
         'busyTimeout' => 1000,
-        'dateFormat'  => [
-            'date'     => 'Y-m-d',
-            'datetime' => 'Y-m-d H:i:s',
-            'time'     => 'H:i:s',
-        ],
     ];
 
     public function __construct()
     {
         parent::__construct();
 
-        // Use test database during testing
+        // Override default database from .env
+        $this->default['hostname'] = $_ENV['database.default.hostname'] ?? $this->default['hostname'];
+        $this->default['username'] = $_ENV['database.default.username'] ?? $this->default['username'];
+        $this->default['password'] = $_ENV['database.default.password'] ?? $this->default['password'];
+        $this->default['database'] = $_ENV['database.default.database'] ?? $this->default['database'];
+        $this->default['DBDriver'] = $_ENV['database.default.DBDriver'] ?? $this->default['DBDriver'];
+        $this->default['DBPrefix'] = $_ENV['database.default.DBPrefix'] ?? $this->default['DBPrefix'];
+        $this->default['port'] = (int)($_ENV['database.default.port'] ?? $this->default['port']);
+        $this->default['DBDebug'] = $_ENV['database.default.DBDebug'] ?? $this->default['DBDebug'];
+
+        // Override test database from .env
+        $this->tests['hostname'] = $_ENV['database.tests.hostname'] ?? $this->tests['hostname'];
+        $this->tests['username'] = $_ENV['database.tests.username'] ?? $this->tests['username'];
+        $this->tests['password'] = $_ENV['database.tests.password'] ?? $this->tests['password'];
+        $this->tests['database'] = $_ENV['database.tests.database'] ?? $this->tests['database'];
+        $this->tests['DBDriver'] = $_ENV['database.tests.DBDriver'] ?? $this->tests['DBDriver'];
+        $this->tests['DBPrefix'] = $_ENV['database.tests.DBPrefix'] ?? $this->tests['DBPrefix'];
+        $this->tests['port'] = (int)($_ENV['database.tests.port'] ?? $this->tests['port']);
+        $this->tests['charset'] = $_ENV['database.tests.charset'] ?? $this->tests['charset'];
+        $this->tests['DBCollat'] = $_ENV['database.tests.DBCollat'] ?? $this->tests['DBCollat'];
+
         if (ENVIRONMENT === 'testing') {
             $this->defaultGroup = 'tests';
         }

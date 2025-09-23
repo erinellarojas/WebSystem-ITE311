@@ -12,9 +12,19 @@ class TeacherController extends BaseController
 
         $data = [
             'title' => 'Teacher Dashboard',
-            'courses' => ['Math 101', 'Science 202'] // sample lang
+            'courses' => ['Math 101', 'Science 202']
         ];
 
         return view('teacher/dashboard', $data);
+    }
+
+    public function myCourses()
+    {
+        return view('teacher/my_courses');
+    }
+
+    public function assignments()
+    {
+        return view('teacher/assignments');
     }
 }

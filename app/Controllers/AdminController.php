@@ -2,22 +2,49 @@
 
 namespace App\Controllers;
 
+use App\Models\UserModel;
+
 class AdminController extends BaseController
 {
+    private function guard()
+    {
+        $session = session();
+        if (!$session->get('isLoggedIn') || $session->get('role') !== 'admin') {
+            return redirect()->to('/login')->with('error', 'Access denied');
+        }
+        return null;
+    }
+
     public function dashboard()
     {
-        // Authorization check
-        if (session()->get('role') !== 'admin') {
-            return redirect()->to('/'); // bawal pumasok kung hindi admin
-        }
+        if ($redirect = $this->guard()) return $redirect;
 
-        // Sample data (pwede mo palitan later)
+        $userModel = new UserModel();
+
         $data = [
             'title' => 'Admin Dashboard',
-            'totalUsers' => 50,
+            'totalUsers' => $userModel->countAllResults(),
             'totalCourses' => 12
         ];
 
         return view('admin/dashboard', $data);
+    }
+
+    public function users()
+    {
+        if ($redirect = $this->guard()) return $redirect;
+        return view('admin/users');
+    }
+
+    public function courses()
+    {
+        if ($redirect = $this->guard()) return $redirect;
+        return view('admin/courses');
+    }
+
+    public function settings()
+    {
+        if ($redirect = $this->guard()) return $redirect;
+        return view('admin/settings');
     }
 }

@@ -11,8 +11,7 @@ class Auth extends BaseController
         helper(['form', 'url']);
         $model = new UserModel();
 
-        if($this->request->getMethod() == 'post'){
-            // Validation rules
+        if ($this->request->getMethod() === 'post') {
             $rules = [
                 'name' => 'required|min_length[3]|max_length[100]',
                 'email' => 'required|valid_email|is_unique[users.email]',
@@ -20,13 +19,12 @@ class Auth extends BaseController
                 'password_confirm' => 'matches[password]'
             ];
 
-            if($this->validate($rules)){
-                // Save user
+            if ($this->validate($rules)) {
                 $model->save([
                     'name' => $this->request->getPost('name'),
                     'email' => $this->request->getPost('email'),
                     'password' => password_hash($this->request->getPost('password'), PASSWORD_DEFAULT),
-                    'role' => 'user'
+                    'role' => 'student'
                 ]);
 
                 $this->session->setFlashdata('success', 'Registration successful! Please login.');
@@ -45,17 +43,16 @@ class Auth extends BaseController
         helper(['form', 'url']);
         $model = new UserModel();
 
-        if($this->request->getMethod() == 'post'){
+        if ($this->request->getMethod() === 'post') {
             $rules = [
                 'email' => 'required|valid_email',
                 'password' => 'required|min_length[6]'
             ];
 
-            if($this->validate($rules)){
+            if ($this->validate($rules)) {
                 $user = $model->where('email', $this->request->getPost('email'))->first();
 
-                if($user && password_verify($this->request->getPost('password'), $user['password'])){
-                    // Set session
+                if ($user && password_verify($this->request->getPost('password'), $user['password'])) {
                     $this->session->set([
                         'user_id' => $user['id'],
                         'name' => $user['name'],
@@ -64,7 +61,15 @@ class Auth extends BaseController
                         'isLoggedIn' => true
                     ]);
 
-                    return redirect()->to('/dashboard');
+                    switch ($user['role']) {
+                        case 'admin':
+                            return redirect()->to('/admin/dashboard');
+                        case 'teacher':
+                            return redirect()->to('/teacher/dashboard');
+                        case 'student':
+                        default:
+                            return redirect()->to('/student/dashboard');
+                    }
                 } else {
                     $this->session->setFlashdata('error', 'Invalid email or password');
                     return redirect()->back()->withInput();
@@ -86,11 +91,25 @@ class Auth extends BaseController
 
     public function dashboard()
     {
-        if(!$this->session->get('isLoggedIn')){
+        if (!$this->session->get('isLoggedIn')) {
             return redirect()->to('/login');
         }
 
-        echo "Welcome, ".$this->session->get('name')."! <br>";
-        echo '<a href="/logout">Logout</a>';
+        $role = $this->session->get('role');
+        $data['title'] = ucfirst($role) . ' Dashboard';
+
+        switch ($role) {
+            case 'admin':
+                $data['totalUsers'] = 10;
+                $data['totalCourses'] = 5;
+                return view('admin/dashboard', $data);
+            case 'teacher':
+                $data['courses'] = ['Math', 'Science', 'History'];
+                return view('teacher/dashboard', $data);
+            case 'student':
+            default:
+                $data['enrolledCourses'] = ['Math', 'Science'];
+                return view('student/dashboard', $data);
+        }
     }
 }
