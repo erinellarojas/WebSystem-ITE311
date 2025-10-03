@@ -1,0 +1,6 @@
+* text=auto
+*.php text
+*.html text
+*.css text
+*.js text
+writable/* text eol=lf
