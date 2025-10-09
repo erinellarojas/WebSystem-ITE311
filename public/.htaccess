@@ -1,9 +1,15 @@
 # Disable directory browsing
 Options -Indexes
 
+# ----------------------------------------------------------------------
+# Rewrite engine
+# ----------------------------------------------------------------------
+
 <IfModule mod_rewrite.c>
-    Options FollowSymLinks
+    Options +FollowSymLinks
     RewriteEngine On
+
+    # If your project is in a subfolder, set RewriteBase
     RewriteBase /ITE311-BUHISAN/
 
     # Redirect Trailing Slashes...
@@ -27,7 +33,10 @@ Options -Indexes
 </IfModule>
 
 <IfModule !mod_rewrite.c>
+    # Fallback if mod_rewrite is not enabled
     ErrorDocument 404 /ITE311-BUHISAN/index.php
 </IfModule>
 
+# Disable server signature
 ServerSignature Off
+models, auth, templates, public, 

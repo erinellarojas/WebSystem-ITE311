@@ -1,14 +1,20 @@
+# Disable directory browsing
+Options -Indexes
+
 <IfModule mod_rewrite.c>
     RewriteEngine On
     RewriteBase /ITE311-BUHISAN/
 
+    # If file or directory does not exist, send to index.php
     RewriteCond %{REQUEST_FILENAME} !-f
     RewriteCond %{REQUEST_FILENAME} !-d
     RewriteRule ^(.*)$ index.php/$1 [L]
 </IfModule>
 
 <IfModule !mod_rewrite.c>
+    # Fallback if mod_rewrite is not enabled
     ErrorDocument 404 /ITE311-BUHISAN/index.php
 </IfModule>
 
+# Disable server signature
 ServerSignature Off

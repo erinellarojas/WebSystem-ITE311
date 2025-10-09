@@ -10,6 +10,7 @@ class Dashboard extends Controller
     public function index()
     {
         $session = session();
+
         if (!$session->get('isLoggedIn')) {
             return redirect()->to('/login');
         }
@@ -19,7 +20,6 @@ class Dashboard extends Controller
         $username = $session->get('username');
         $userId = $session->get('id');
 
-        // Default values
         $totalUsers = 0;
         $totalCourses = 0;
         $myCourses = 0;

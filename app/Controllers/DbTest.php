@@ -13,9 +13,9 @@ class DbTest extends Controller
             $db = Database::connect();
             $query = $db->query("SELECT DATABASE() AS db_name");
             $result = $query->getRow();
-            echo "Database connected successfully: " . $result->db_name;
+            return "Database connected successfully: " . $result->db_name;
         } catch (\Exception $e) {
-            echo "Database connection failed: " . $e->getMessage();
+            return "Database connection failed: " . $e->getMessage();
         }
     }
 }

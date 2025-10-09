@@ -3,8 +3,6 @@
 namespace App\Controllers;
 
 use CodeIgniter\Controller;
-use CodeIgniter\HTTP\CLIRequest;
-use CodeIgniter\HTTP\IncomingRequest;
 use CodeIgniter\HTTP\RequestInterface;
 use CodeIgniter\HTTP\ResponseInterface;
 use Psr\Log\LoggerInterface;
@@ -17,14 +15,14 @@ use Psr\Log\LoggerInterface;
  * Extend this class in any new controllers:
  *     class Home extends BaseController
  *
- * For security be sure to declare any new methods as protected or private.
+ * For security, be sure to declare any new methods as protected or private.
  */
 abstract class BaseController extends Controller
 {
     /**
      * Instance of the main Request object.
      *
-     * @var CLIRequest|IncomingRequest
+     * @var \CodeIgniter\HTTP\IncomingRequest|\CodeIgniter\HTTP\CLIRequest
      */
     protected $request;
 
@@ -35,15 +33,20 @@ abstract class BaseController extends Controller
      *
      * @var list<string>
      */
-    protected $helpers = [];
+    protected $helpers = ['form', 'url']; // Load commonly used helpers
 
     /**
-     * Be sure to declare properties for any property fetch you initialized.
-     * The creation of dynamic property is deprecated in PHP 8.2.
+     * Session instance
      */
-    // protected $session;
+    protected $session;
 
     /**
+     * Initialization function for controllers.
+     *
+     * @param RequestInterface  $request
+     * @param ResponseInterface $response
+     * @param LoggerInterface   $logger
+     *
      * @return void
      */
     public function initController(RequestInterface $request, ResponseInterface $response, LoggerInterface $logger)
@@ -51,8 +54,10 @@ abstract class BaseController extends Controller
         // Do Not Edit This Line
         parent::initController($request, $response, $logger);
 
-        // Preload any models, libraries, etc, here.
+        // Initialize session service globally
+        $this->session = \Config\Services::session();
 
-        // E.g.: $this->session = service('session');
+        // Preload any models, libraries, etc, here.
+        // Example: $this->userModel = new \App\Models\UserModel();
     }
 }

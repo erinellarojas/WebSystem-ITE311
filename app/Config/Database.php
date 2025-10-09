@@ -35,13 +35,13 @@ class Database extends Config
         'hostname'    => '127.0.0.1',
         'username'    => 'root',
         'password'    => '',
-        'database'    => ':memory:',
-        'DBDriver'    => 'SQLite3',
-        'DBPrefix'    => 'db_',
+        'database'    => 'lms_buhisan_test',
+        'DBDriver'    => 'MySQLi',
+        'DBPrefix'    => '',
         'pConnect'    => false,
         'DBDebug'     => true,
-        'charset'     => 'utf8',
-        'DBCollat'    => 'utf8_general_ci',
+        'charset'     => 'utf8mb4',
+        'DBCollat'    => 'utf8mb4_general_ci',
         'swapPre'     => '',
         'encrypt'     => false,
         'compress'    => false,
@@ -55,6 +55,15 @@ class Database extends Config
     public function __construct()
     {
         parent::__construct();
+
+        // Optional: Override database settings using .env (if available)
+        $this->default['hostname'] = $_ENV['database.default.hostname'] ?? $this->default['hostname'];
+        $this->default['username'] = $_ENV['database.default.username'] ?? $this->default['username'];
+        $this->default['password'] = $_ENV['database.default.password'] ?? $this->default['password'];
+        $this->default['database'] = $_ENV['database.default.database'] ?? $this->default['database'];
+        $this->default['DBDriver'] = $_ENV['database.default.DBDriver'] ?? $this->default['DBDriver'];
+        $this->default['port']     = (int)($_ENV['database.default.port'] ?? $this->default['port']);
+
         if (ENVIRONMENT === 'testing') {
             $this->defaultGroup = 'tests';
         }
