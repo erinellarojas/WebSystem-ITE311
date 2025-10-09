@@ -1,6 +1,12 @@
+#---------------------------------------------------------------
+# ENVIRONMENT
+#---------------------------------------------------------------
 CI_ENVIRONMENT = development
 app.baseURL = http://localhost/ITE311-BUHISAN
 
+#---------------------------------------------------------------
+# DATABASE
+#---------------------------------------------------------------
 database.default.hostname = localhost
 database.default.database = lms_buhisan
 database.default.username = root
@@ -14,12 +20,18 @@ database.default.swapPre =
 database.default.encrypt = false
 database.default.compress = false
 database.default.strictOn = false
-database.default.failover = []
+database.default.failover[] =
 database.default.port = 3306
 
+#---------------------------------------------------------------
+# SESSION
+#---------------------------------------------------------------
 session.driver = CodeIgniter\Session\Handlers\FileHandler
 session.savePath = writable/sessions
 
+#---------------------------------------------------------------
+# LOGGER
+#---------------------------------------------------------------
 logger.threshold = 9
 logger.path = writable/logs
 logger.fileExtension = log
