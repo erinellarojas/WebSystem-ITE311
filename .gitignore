@@ -9,6 +9,13 @@ app/Config/.env
 writable/
 public/writable/
 
+# Logs, session, cache, debugbar
+writable/logs/
+writable/session/
+writable/cache/
+writable/debugbar/
+*.log
+
 # IDE / editor files
 *.idea/
 *.vscode/
@@ -18,14 +25,6 @@ public/writable/
 # System files
 .DS_Store
 Thumbs.db
-
-# Logs
-*.log
-
-# Session / cache files
-writable/session/
-writable/cache/
-writable/debugbar/
 
 # Composer lock file (optional if you want to track it)
 # composer.lock
