@@ -1,0 +1,14 @@
+# Composer dependencies
+/vendor/
+composer.lock
+
+# Environment files
+.env
+
+# Writable folders
+writable/
+public/writable/
+
+# IDE/editor folders
+*.vscode/
+*.idea/
