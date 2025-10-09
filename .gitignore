@@ -1,14 +1,31 @@
 # Composer dependencies
 /vendor/
-composer.lock
 
 # Environment files
 .env
+app/Config/.env
 
-# Writable folders
+# CI4 writable folders
 writable/
 public/writable/
 
-# IDE/editor folders
-*.vscode/
+# IDE / editor files
 *.idea/
+*.vscode/
+*.sublime-project
+*.sublime-workspace
+
+# System files
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+
+# Session / cache files
+writable/session/
+writable/cache/
+writable/debugbar/
+
+# Composer lock file (optional if you want to track it)
+# composer.lock
