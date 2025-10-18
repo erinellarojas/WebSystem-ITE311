@@ -1,52 +1,59 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>LMS Dashboard</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <title>Student Dashboard</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 </head>
-<body>
-<nav class="navbar navbar-expand-lg navbar-dark bg-primary">
-  <div class="container-fluid">
-    <a class="navbar-brand" href="#">LMS</a>
-    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-      <span class="navbar-toggler-icon"></span>
-    </button>
-    <div class="collapse navbar-collapse" id="navbarNav">
-      <ul class="navbar-nav ms-auto">
-        <?php if(session()->get('isLoggedIn')): ?>
-            <li class="nav-item"><a class="nav-link" href="/logout">Logout</a></li>
-        <?php else: ?>
-            <li class="nav-item"><a class="nav-link" href="/login">Login</a></li>
-        <?php endif; ?>
-      </ul>
-    </div>
-  </div>
-</nav>
+<body class="bg-light">
+<div class="container mt-4">
+    <h2>Welcome, <?= esc($username) ?>!</h2>
+    <hr>
 
-<div class="container mt-5 text-center">
-    <h2>Welcome, <?= esc(session()->get('username') ?? 'User') ?>!</h2>
-    <p>Your role: <?= esc(session()->get('role') ?? 'N/A') ?></p>
-
-    <div class="row mt-4">
-        <div class="col-md-6 mb-3">
-            <div class="card shadow-sm">
-                <div class="card-body">
-                    <h5>Total Users</h5>
-                    <p class="fs-3"><?= esc($totalUsers ?? 0) ?></p>
-                </div>
-            </div>
+    <?php if ($role === 'student'): ?>
+    <div class="row">
+        <div class="col-md-6">
+            <h4>Enrolled Courses</h4>
+            <ul class="list-group">
+                <?php if (empty($enrolledCourses)): ?>
+                    <li class="list-group-item">No enrolled courses yet.</li>
+                <?php else: ?>
+                    <?php foreach ($enrolledCourses as $course): ?>
+                        <li class="list-group-item"><?= esc($course['name']) ?></li>
+                    <?php endforeach; ?>
+                <?php endif; ?>
+            </ul>
         </div>
-        <div class="col-md-6 mb-3">
-            <div class="card shadow-sm">
-                <div class="card-body">
-                    <h5>Total Courses</h5>
-                    <p class="fs-3"><?= esc($totalCourses ?? 0) ?></p>
-                </div>
-            </div>
+
+        <div class="col-md-6">
+            <h4>Available Courses</h4>
+            <ul class="list-group">
+                <?php if (empty($availableCourses)): ?>
+                    <li class="list-group-item">All courses are enrolled.</li>
+                <?php else: ?>
+                    <?php foreach ($availableCourses as $course): ?>
+                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                            <?= esc($course['name']) ?>
+                            <button class="btn btn-primary enroll-btn" data-course-id="<?= $course['id'] ?>">Enroll</button>
+                        </li>
+                    <?php endforeach; ?>
+                <?php endif; ?>
+            </ul>
         </div>
     </div>
+    <?php endif; ?>
 </div>
 
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+$('.enroll-btn').click(function() {
+    let btn = $(this);
+    $.post('/course/enroll', { course_id: btn.data('course-id') }, function(res) {
+        alert(res.message);
+        if (res.status === 'success') {
+            btn.prop('disabled', true).text('Enrolled');
+        }
+    }, 'json');
+});
+</script>
 </body>
 </html>

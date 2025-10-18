@@ -2,7 +2,8 @@
 # ENVIRONMENT
 #---------------------------------------------------------------
 CI_ENVIRONMENT = development
-app.baseURL = http://localhost/ITE311-BUHISAN
+app.baseURL = 'http://localhost:8080/ITE311-BUHISAN/public/'
+
 
 #---------------------------------------------------------------
 # DATABASE

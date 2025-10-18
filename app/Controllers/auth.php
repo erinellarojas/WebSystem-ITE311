@@ -2,64 +2,56 @@
 
 namespace App\Controllers;
 
-use CodeIgniter\Controller;
-use Config\Database;
+use App\Models\UserModel;
 
-class Auth extends Controller
+class Auth extends BaseController
 {
-    public function login()
+    public function index()
     {
-        $session = session();
-        if ($session->get('isLoggedIn')) {
-            return redirect()->to('/dashboard');
-        }
         return view('auth/login');
     }
 
-    public function auth()
+    public function login()
     {
         $session = session();
-        $db = Database::connect();
-        $builder = $db->table('users');
 
-        $username = $this->request->getPost('username');
-        $password = $this->request->getPost('password');
-
-        $user = $builder->where('username', $username)->get()->getRowArray();
-
-        // fallback admin login
-        if (!$user && $username === 'admin' && $password === '12345') {
-            $session->set([
-                'isLoggedIn' => true,
-                'id'         => 1,
-                'username'   => 'admin',
-                'role'       => 'admin',
-            ]);
-            return redirect()->to('/dashboard');
+        // Only process POST requests
+        if ($this->request->getMethod() !== 'post') {
+            return redirect()->to('/auth');
         }
 
-        if ($user && password_verify($password, $user['password'])) {
+        $email = trim($this->request->getPost('email') ?? '');
+        $password = trim($this->request->getPost('password') ?? '');
+
+        // Prevent empty input
+        if (empty($email) || empty($password)) {
+            $session->setFlashdata('error', 'Email and password are required');
+            return redirect()->back()->withInput();
+        }
+
+        $userModel = new UserModel();
+        $user = $userModel->verifyPassword($email, $password);
+
+        if ($user) {
+            // Set user session
             $session->set([
-                'isLoggedIn' => true,
-                'id'         => $user['id'],
-                'username'   => $user['username'],
+                'user_id'    => $user['id'],
+                'name'       => $user['name'],
+                'email'      => $user['email'],
                 'role'       => $user['role'],
+                'isLoggedIn' => true
             ]);
-            return redirect()->to('/dashboard');
-        }
 
-        $session->setFlashdata('error', 'Invalid username or password');
-        return redirect()->to('/login');
+            return redirect()->to('/dashboard');
+        } else {
+            $session->setFlashdata('error', 'Invalid email or password');
+            return redirect()->back()->withInput();
+        }
     }
 
     public function logout()
     {
         session()->destroy();
-        return redirect()->to('/login');
+        return redirect()->to('/auth');
     }
 }
-
-
-
-
-

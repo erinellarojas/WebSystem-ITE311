@@ -12,34 +12,31 @@
         <div class="col-md-4">
             <div class="card shadow-sm">
                 <div class="card-header bg-dark text-white text-center">
-                    <h4>Login</h4>
+                    <h4>LOGIN</h4>
                 </div>
                 <div class="card-body">
                     <?php if (session()->getFlashdata('error')): ?>
-                        <div class="alert alert-danger">
+                        <div class="alert alert-danger text-center">
                             <?= esc(session()->getFlashdata('error')) ?>
                         </div>
                     <?php endif; ?>
 
-                    <?php if (session()->getFlashdata('success')): ?>
-                        <div class="alert alert-success">
-                            <?= esc(session()->getFlashdata('success')) ?>
-                        </div>
-                    <?php endif; ?>
-
-                    <form method="post" action="<?= site_url('/login') ?>">
+                    <form method="post" action="<?= site_url('auth/login') ?>">
+                        <?= csrf_field() ?>
                         <div class="mb-3">
                             <label for="email" class="form-label">Email</label>
-                            <input type="email" name="email" id="email" class="form-control" required>
+                            <input type="email" name="email" id="email" class="form-control" 
+                                   value="<?= old('email') ?>" autocomplete="email" required>
                         </div>
                         <div class="mb-3">
                             <label for="password" class="form-label">Password</label>
-                            <input type="password" name="password" id="password" class="form-control" required>
+                            <input type="password" name="password" id="password" class="form-control" 
+                                   autocomplete="current-password" required>
                         </div>
                         <button type="submit" class="btn btn-dark w-100">Login</button>
                     </form>
 
-                    <p class="mt-3 text-center">Don't have an account? <a href="<?= site_url('/register') ?>">Register here</a></p>
+                    <p class="mt-3 text-center">Don't have an account? <a href="<?= site_url('register') ?>">Register here</a></p>
                 </div>
             </div>
         </div>

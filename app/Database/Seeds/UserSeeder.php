@@ -8,10 +8,10 @@ class UserSeeder extends Seeder
 {
     public function run()
     {
-        $data = [
+        $users = [
             [
                 'name'     => 'Erica Buhisan',
-                'email'    => 'buhisanerica2gmail.com',
+                'email'    => 'buhisanerica2@gmail.com',
                 'role'     => 'student',
                 'password' => password_hash('student123', PASSWORD_DEFAULT),
             ],
@@ -29,7 +29,13 @@ class UserSeeder extends Seeder
             ],
         ];
 
-        // Insert multiple records at once
-        $this->db->table('users')->insertBatch($data);
+        $builder = $this->db->table('users');
+
+        foreach ($users as $user) {
+            $existing = $builder->where('email', $user['email'])->get()->getRow();
+            if (!$existing) {
+                $builder->insert($user);
+            }
+        }
     }
 }

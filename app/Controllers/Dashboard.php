@@ -4,6 +4,7 @@ namespace App\Controllers;
 
 use CodeIgniter\Controller;
 use Config\Database;
+use App\Models\EnrollmentModel;
 
 class Dashboard extends Controller
 {
@@ -18,6 +19,7 @@ class Dashboard extends Controller
         $role = $session->get('role');
         $username = $session->get('username');
         $userId = $session->get('id');
+        $enrollmentModel = new EnrollmentModel();
 
         $data = [
             'role' => $role,
@@ -28,6 +30,8 @@ class Dashboard extends Controller
             'assignments' => 0,
             'enrolled' => 0,
             'pendingAssignments' => 0,
+            'enrolledCourses' => [],
+            'availableCourses' => []
         ];
 
         if ($role === 'admin') {
@@ -36,18 +40,23 @@ class Dashboard extends Controller
         } elseif ($role === 'teacher') {
             $data['myCourses'] = $db->table('courses')->where('teacher_id', $userId)->countAllResults();
             $data['assignments'] = $db->table('assignments')
-                                      ->join('courses', 'courses.id = assignments.course_id')
-                                      ->where('courses.teacher_id', $userId)
-                                      ->countAllResults();
+                ->join('courses', 'courses.id = assignments.course_id')
+                ->where('courses.teacher_id', $userId)
+                ->countAllResults();
         } elseif ($role === 'student') {
-            $data['enrolled'] = $db->table('enrollments')->where('student_id', $userId)->countAllResults();
+            $data['enrolled'] = $db->table('enrollments')->where('user_id', $userId)->countAllResults();
             $data['pendingAssignments'] = $db->table('assignments')
-                                             ->join('enrollments', 'assignments.course_id = enrollments.course_id')
-                                             ->where('enrollments.student_id', $userId)
-                                             ->countAllResults();
+                ->join('enrollments', 'assignments.course_id = enrollments.course_id')
+                ->where('enrollments.user_id', $userId)
+                ->countAllResults();
+            $data['enrolledCourses'] = $enrollmentModel->getUserEnrollments($userId);
+            $data['availableCourses'] = $db->table('courses')
+                ->whereNotIn('id', array_column($data['enrolledCourses'], 'id'))
+                ->get()->getResultArray();
         }
 
         return view('dashboard/index', $data);
     }
 }
+
 

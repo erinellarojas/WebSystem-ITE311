@@ -3,7 +3,10 @@ Options -Indexes
 
 <IfModule mod_rewrite.c>
     RewriteEngine On
-    RewriteBase /ITE311-BUHISAN/
+    RewriteBase /ITE311-BUHISAN/public/
+
+    # Avoid redirect loops: check if the request is NOT index.php
+    RewriteCond %{REQUEST_URI} !^/ITE311-BUHISAN/public/index\.php
 
     # If file or directory does not exist, send to index.php
     RewriteCond %{REQUEST_FILENAME} !-f

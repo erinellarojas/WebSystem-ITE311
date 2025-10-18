@@ -11,7 +11,7 @@ class App extends BaseConfig
      * Base Site URL
      * --------------------------------------------------------------------------
      */
-    public string $baseURL = 'http://localhost/ITE311-BUHISAN/';
+    public string $baseURL = 'http://localhost:8080/ITE311-BUHISAN/public/';
 
     /**
      * Allowed Hostnames in the Site URL other than the hostname in the baseURL.

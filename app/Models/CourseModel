@@ -1,0 +1,21 @@
+<?php
+
+namespace App\Models;
+
+use CodeIgniter\Model;
+
+class CourseModel extends Model
+{
+    protected $table = 'courses';
+    protected $allowedFields = ['name', 'description'];
+
+
+    public function getAvailableCourses($userId)
+    {
+        return $this->whereNotIn('id', function($builder) use ($userId) {
+            $builder->select('course_id')
+                    ->from('enrollments')
+                    ->where('user_id', $userId);
+        })->findAll();
+    }
+}

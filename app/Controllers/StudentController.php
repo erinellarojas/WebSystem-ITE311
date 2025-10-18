@@ -2,29 +2,27 @@
 
 namespace App\Controllers;
 
-class StudentController extends BaseController
+use CodeIgniter\Controller;
+use App\Models\CourseModel;
+use App\Models\EnrollmentModel;
+
+class StudentController extends Controller
 {
     public function dashboard()
     {
-        if (session()->get('role') !== 'student') {
-            return redirect()->to('/');
+        $session = session();
+        if (!$session->get('isLoggedIn') || $session->get('role') !== 'student') {
+            return redirect()->to('/login');
         }
 
+        $courseModel = new CourseModel();
+        $enrollmentModel = new EnrollmentModel();
+
         $data = [
-            'title' => 'Student Dashboard',
-            'enrolledCourses' => ['English 101', 'IT Fundamentals']
+            'courses' => $courseModel->findAll(),
+            'enrollments' => $enrollmentModel->getUserEnrollments($session->get('user_id'))
         ];
 
-        return view('student/dashboard', $data);
-    }
-
-    public function myClasses()
-    {
-        return view('student/my_classes');
-    }
-
-    public function grades()
-    {
-        return view('student/grades');
+        return view('dashboard/index', $data);
     }
 }
