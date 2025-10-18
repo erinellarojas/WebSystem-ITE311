@@ -33,15 +33,13 @@ $routes->post('contact/submit', 'Home::submitContact');
 
 $routes->post('course/enroll', 'Course::enroll');
 
-// Default Dashboard (optional, used for testing)
+
 $routes->get('dashboard', 'Dashboard::index');
 
-// ✅ Announcements Page (Accessible to All Logged-in Users)
+
 $routes->get('announcements', 'Announcement::index');
 
-// --------------------------------------------------------------------
-// Admin Routes (Protected by RoleAuth Filter)
-// --------------------------------------------------------------------
+
 $routes->group('admin', ['filter' => 'roleAuth'], function ($routes) {
     $routes->get('dashboard', 'Admin::dashboard');
     $routes->get('users', 'Admin::users');
@@ -49,23 +47,17 @@ $routes->group('admin', ['filter' => 'roleAuth'], function ($routes) {
     $routes->get('settings', 'Admin::settings');
 });
 
-// --------------------------------------------------------------------
-// Teacher Routes (Protected by RoleAuth Filter)
-// --------------------------------------------------------------------
+
 $routes->group('teacher', ['filter' => 'roleAuth'], function ($routes) {
     $routes->get('dashboard', 'Teacher::dashboard');
 });
 
-// --------------------------------------------------------------------
-// Student Routes (Protected by RoleAuth Filter)
-// --------------------------------------------------------------------
+
 $routes->group('student', ['filter' => 'roleAuth'], function ($routes) {
     $routes->get('dashboard', 'Student::dashboard');
 });
 
-// --------------------------------------------------------------------
-// Load environment-specific routes
-// --------------------------------------------------------------------
+
 $envRoutes = APPPATH . 'Config/' . ENVIRONMENT . '/Routes.php';
 if (file_exists($envRoutes)) {
     require $envRoutes;

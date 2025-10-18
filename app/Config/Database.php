@@ -56,7 +56,7 @@ class Database extends Config
     {
         parent::__construct();
 
-        // Optional: Override database settings using .env (if available)
+
         $this->default['hostname'] = $_ENV['database.default.hostname'] ?? $this->default['hostname'];
         $this->default['username'] = $_ENV['database.default.username'] ?? $this->default['username'];
         $this->default['password'] = $_ENV['database.default.password'] ?? $this->default['password'];
