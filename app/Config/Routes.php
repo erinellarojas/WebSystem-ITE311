@@ -14,7 +14,7 @@ $routes->setDefaultController('Auth');
 $routes->setDefaultMethod('login');
 $routes->setTranslateURIDashes(false);
 $routes->set404Override(fn() => view('errors/custom_404'));
-$routes->setAutoRoute(false); // Turn off auto-routing to avoid accidental access
+$routes->setAutoRoute(false); // Disable auto routing for security
 
 // --------------------------------------------------------------------
 // Public Routes
@@ -33,33 +33,34 @@ $routes->post('contact/submit', 'Home::submitContact');
 
 $routes->post('course/enroll', 'Course::enroll');
 
-$routes->get('dashboard', 'Dashboard::index'); // Make sure Dashboard controller exists
+// Default Dashboard (optional, used for testing)
+$routes->get('dashboard', 'Dashboard::index');
 
-// ✅ Added Announcement Route
+// ✅ Announcements Page (Accessible to All Logged-in Users)
 $routes->get('announcements', 'Announcement::index');
 
 // --------------------------------------------------------------------
-// Admin Routes (with authAdmin filter)
+// Admin Routes (Protected by RoleAuth Filter)
 // --------------------------------------------------------------------
-$routes->group('admin', ['filter' => 'authAdmin'], function ($routes) {
-    $routes->get('dashboard', 'AdminController::dashboard');
-    $routes->get('users', 'AdminController::users');
-    $routes->get('courses', 'AdminController::courses');
-    $routes->get('settings', 'AdminController::settings');
+$routes->group('admin', ['filter' => 'roleAuth'], function ($routes) {
+    $routes->get('dashboard', 'Admin::dashboard');
+    $routes->get('users', 'Admin::users');
+    $routes->get('courses', 'Admin::courses');
+    $routes->get('settings', 'Admin::settings');
 });
 
 // --------------------------------------------------------------------
-// Teacher Routes (with authTeacher filter)
+// Teacher Routes (Protected by RoleAuth Filter)
 // --------------------------------------------------------------------
-$routes->group('teacher', ['filter' => 'authTeacher'], function ($routes) {
-    $routes->get('dashboard', 'TeacherController::dashboard');
+$routes->group('teacher', ['filter' => 'roleAuth'], function ($routes) {
+    $routes->get('dashboard', 'Teacher::dashboard');
 });
 
 // --------------------------------------------------------------------
-// Student Routes (with authStudent filter)
+// Student Routes (Protected by RoleAuth Filter)
 // --------------------------------------------------------------------
-$routes->group('student', ['filter' => 'authStudent'], function ($routes) {
-    $routes->get('dashboard', 'StudentController::dashboard');
+$routes->group('student', ['filter' => 'roleAuth'], function ($routes) {
+    $routes->get('dashboard', 'Student::dashboard');
 });
 
 // --------------------------------------------------------------------

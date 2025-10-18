@@ -3,68 +3,71 @@
 namespace Config;
 
 use CodeIgniter\Config\Filters as BaseFilters;
-use CodeIgniter\Filters\Cors;
-use CodeIgniter\Filters\CSRF;
-use CodeIgniter\Filters\DebugToolbar;
-use CodeIgniter\Filters\ForceHTTPS;
-use CodeIgniter\Filters\Honeypot;
-use CodeIgniter\Filters\InvalidChars;
-use CodeIgniter\Filters\PageCache;
-use CodeIgniter\Filters\PerformanceMetrics;
-use CodeIgniter\Filters\SecureHeaders;
+use CodeIgniter\Filters\{
+    CSRF,
+    DebugToolbar,
+    Honeypot,
+    InvalidChars,
+    SecureHeaders
+};
 
 class Filters extends BaseFilters
 {
-    // Aliases for filters
+    // --------------------------------------------------------------------
+    // Filter Aliases
+    // --------------------------------------------------------------------
     public array $aliases = [
         'csrf'          => CSRF::class,
         'toolbar'       => DebugToolbar::class,
         'honeypot'      => Honeypot::class,
         'invalidchars'  => InvalidChars::class,
         'secureheaders' => SecureHeaders::class,
-        'cors'          => Cors::class,
-        'forcehttps'    => ForceHTTPS::class,
-        'pagecache'     => PageCache::class,
-        'performance'   => PerformanceMetrics::class,
 
-        // Role-based filters
+        // 🔒 Existing role-based filters
         'authAdmin'     => \App\Filters\AuthAdmin::class,
         'authTeacher'   => \App\Filters\AuthTeacher::class,
         'authStudent'   => \App\Filters\AuthStudent::class,
+
+        // ✅ New Role Authorization Filter (for Task 4)
+        'roleAuth'      => \App\Filters\RoleAuth::class,
     ];
 
-    // Filters that are required globally
-    public array $required = [
+    // --------------------------------------------------------------------
+    // Global Filters (Applied to all routes)
+    // --------------------------------------------------------------------
+    public array $globals = [
         'before' => [
-            'forcehttps', // Force HTTPS
-            'pagecache',  // Cache pages
+            'csrf',
+            'honeypot',
+            'invalidchars',
         ],
         'after' => [
-            'pagecache',
-            'performance',
+            'secureheaders',
             'toolbar',
         ],
     ];
 
-    // Global filters for every request
-    public array $globals = [
-        'before' => [
-            'csrf',        // CSRF protection
-            'honeypot',    // Bot protection
-            'invalidchars' // Invalid character filter
-        ],
-        'after' => [
-            'secureheaders', // Secure headers
-        ],
-    ];
-
-    // Filters by HTTP methods (optional)
+    // --------------------------------------------------------------------
+    // Filters by HTTP Methods (optional)
+    // --------------------------------------------------------------------
     public array $methods = [];
 
-    // Filters applied to specific URI patterns
+    // --------------------------------------------------------------------
+    // Route-Specific Filters
+    // --------------------------------------------------------------------
     public array $filters = [
+        // Protect route groups
         'authAdmin'   => ['before' => ['admin/*']],
         'authTeacher' => ['before' => ['teacher/*']],
         'authStudent' => ['before' => ['student/*']],
+
+        // ✅ Apply RoleAuth to secure access by role
+        'roleAuth' => [
+            'before' => [
+                'admin/*',
+                'teacher/*',
+                'student/*',
+            ],
+        ],
     ];
 }
