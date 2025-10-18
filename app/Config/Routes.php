@@ -14,7 +14,7 @@ $routes->setDefaultController('Auth');
 $routes->setDefaultMethod('login');
 $routes->setTranslateURIDashes(false);
 $routes->set404Override(fn() => view('errors/custom_404'));
-$routes->setAutoRoute(false); // Turn off auto-routing to avoid loops
+$routes->setAutoRoute(false); // Turn off auto-routing to avoid accidental access
 
 // --------------------------------------------------------------------
 // Public Routes
@@ -34,6 +34,9 @@ $routes->post('contact/submit', 'Home::submitContact');
 $routes->post('course/enroll', 'Course::enroll');
 
 $routes->get('dashboard', 'Dashboard::index'); // Make sure Dashboard controller exists
+
+// ✅ Added Announcement Route
+$routes->get('announcements', 'Announcement::index');
 
 // --------------------------------------------------------------------
 // Admin Routes (with authAdmin filter)
