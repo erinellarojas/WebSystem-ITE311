@@ -1,0 +1,39 @@
+#---------------------------------------------------------------
+# ENVIRONMENT
+#---------------------------------------------------------------
+CI_ENVIRONMENT = development
+app.baseURL = 'http://localhost:8080/ITE311-BUHISAN/public/'
+
+
+#---------------------------------------------------------------
+# DATABASE
+#---------------------------------------------------------------
+database.default.hostname = localhost
+database.default.database = lms_buhisan
+database.default.username = root
+database.default.password =
+database.default.DBDriver = MySQLi
+database.default.DBPrefix =
+database.default.DSN =
+database.default.charset = utf8
+database.default.DBCollat = utf8_general_ci
+database.default.swapPre =
+database.default.encrypt = false
+database.default.compress = false
+database.default.strictOn = false
+database.default.failover[] =
+database.default.port = 3306
+
+#---------------------------------------------------------------
+# SESSION
+#---------------------------------------------------------------
+session.driver = CodeIgniter\Session\Handlers\FileHandler
+session.savePath = writable/sessions
+
+#---------------------------------------------------------------
+# LOGGER
+#---------------------------------------------------------------
+logger.threshold = 9
+logger.path = writable/logs
+logger.fileExtension = log
+logger.dateFormat = Y-m-d H:i:s
